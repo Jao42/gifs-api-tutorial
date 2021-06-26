@@ -1,0 +1,50 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+
+main > button {
+  margin: 20px;
+  padding: 10px;
+  color: pink;  
+  background-color: rgb(125, 125, 125);
+}
+
+main > button:hover {
+  background-color: rgb(138, 138, 138);
+  color: rgb(255, 161, 200);
+  cursor: pointer;
+}
+
+.search {
+  padding: 4px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.search button {
+  padding: 4px;
+
+}
