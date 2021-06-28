@@ -4,20 +4,18 @@ const otherGifButton = document.querySelector('main button')
 const termInput = document.querySelector('.search input')
 const termSubmitButton = document.querySelector('.search button')
 const buttons = document.querySelectorAll('button')
-
 const key = '0g9MebyVxmWGUhwVDxLPCHJ9Vqci9gCk'  
 const apiLink = 'https://api.giphy.com/v1/gifs/translate?api_key='
   + key +
   '&s='
 
 let searchTerm = 'cats'
-let fallbackSearchTerm
 
 async function getGifUrl(searchTerm) {
   const req = await fetch(
-  apiLink + searchTerm, {
-    mode: 'cors'
-  })
+    apiLink + searchTerm, {
+      mode: 'cors'
+    })
   const resBody = await req.json()
 
   if (resBody['data']['images'] === undefined) {
@@ -35,7 +33,7 @@ messages = {
   errorNotExpected: 'A thing not expected occurs... :/'
 }
 
-async function buttonsHandle(searchTerm) {
+async function statusHandler(searchTerm) {
   return await getGifUrl(searchTerm)
   .then((url) => { 
     catImg.src = url
@@ -43,7 +41,6 @@ async function buttonsHandle(searchTerm) {
   })
   .catch((err) => {
     if (err.message === 'imageNotFound') {
-      searchTerm = fallbackSearchTerm
       return err.message
     }
     else {
@@ -53,18 +50,20 @@ async function buttonsHandle(searchTerm) {
 }
 
 getGifUrl(searchTerm).then((url => catImg.src = url))
+
 termSubmitButton.addEventListener('click', () => {
   loading.textContent = 'loading...'
   if (termInput.value) {
-    buttonsHandle(termInput.value).then(messageText => {
-      messageText === 'success' ? searchTerm = termInput.value : ''
-      loading.textContent = messages[messageText]
+    statusHandler(termInput.value).then(status => {
+      status === 'success' ? searchTerm = termInput.value : ''
+      loading.textContent = messages[status]
     })
   }
 })
+
 otherGifButton.addEventListener('click', () => {
   loading.textContent = 'loading...'
-  buttonsHandle(searchTerm).then(messageText => {
-    loading.textContent = messages[messageText]
+  statusHandler(searchTerm).then(status => {
+    loading.textContent = messages[status]
   })
 })
