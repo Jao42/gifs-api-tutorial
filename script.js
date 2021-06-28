@@ -26,6 +26,7 @@ async function getGifUrl(searchTerm) {
     return gifUrl
   }
 }
+
 messages = {
   success: '',
   imageNotFound: 'We can\'t find a gif with this term :(.' +
@@ -33,8 +34,8 @@ messages = {
   errorNotExpected: 'A thing not expected occurs... :/'
 }
 
-async function statusHandler(searchTerm) {
-  return await getGifUrl(searchTerm)
+function statusHandler(searchTerm) {
+  return getGifUrl(searchTerm)
   .then((url) => { 
     catImg.src = url
     return 'success'
