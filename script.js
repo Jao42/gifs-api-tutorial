@@ -14,30 +14,19 @@ let searchTerm = 'cats'
 let fallbackSearchTerm
 
 async function getGifUrl(searchTerm) {
-  link = await fetch(
+  const req = await fetch(
   apiLink + searchTerm, {
     mode: 'cors'
-    })
-    .then((res, err) => {
-      if (err) {
-        return err
-      }
-      else {
-        data = res.json()
-        return data 
-      }
-    })
-    .then((data) => {
-      if (data['data']['images'] === undefined) {
-        throw new Error("imageNotFound")
-      }
-      else {
-        url = data['data']['images']['downsized_medium']['url']
-        return url
-      }
-    })
+  })
+  const resBody = await req.json()
 
-  return link
+  if (resBody['data']['images'] === undefined) {
+    throw new Error("imageNotFound")
+  }
+  else {
+    const gifUrl = resBody['data']['images']['downsized_medium']['url']
+    return gifUrl
+  }
 }
 messages = {
   success: '',
