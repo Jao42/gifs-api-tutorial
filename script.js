@@ -1,6 +1,6 @@
 const catImg = document.querySelector('img')
 const loading = document.querySelector('.loading')
-const button = document.querySelector('main button')
+const otherGifButton = document.querySelector('main button')
 const termInput = document.querySelector('.search input')
 const termSubmitButton = document.querySelector('.search button')
 const buttons = document.querySelectorAll('button')
@@ -29,7 +29,7 @@ async function getGifUrl(searchTerm) {
     })
     .then((data) => {
       if (data['data']['images'] === undefined) {
-        throw new Error("ImageNotFound")
+        throw new Error("imageNotFound")
       }
       else {
         url = data['data']['images']['downsized_medium']['url']
@@ -39,33 +39,43 @@ async function getGifUrl(searchTerm) {
 
   return link
 }
+messages = {
+  success: '',
+  imageNotFound: 'We can\'t find a gif with this term :(.' +
+        ' Try search another thing :)',
+  errorNotExpected: 'A thing not expected occurs... :/'
+}
+
+async function buttonsHandle(searchTerm) {
+  return await getGifUrl(searchTerm)
+  .then((url) => { 
+    catImg.src = url
+    return 'success'
+  })
+  .catch((err) => {
+    if (err.message === 'imageNotFound') {
+      searchTerm = fallbackSearchTerm
+      return err.message
+    }
+    else {
+     return 'errorNotExpected' 
+    }
+  })
+}
 
 getGifUrl(searchTerm).then((url => catImg.src = url))
-
 termSubmitButton.addEventListener('click', () => {
+  loading.textContent = 'loading...'
   if (termInput.value) {
-    fallbackSearchTerm = searchTerm
-    searchTerm = termInput.value
+    buttonsHandle(termInput.value).then(messageText => {
+      messageText === 'success' ? searchTerm = termInput.value : ''
+      loading.textContent = messages[messageText]
+    })
   }
 })
-
-buttons.forEach((button) => {
-  button.addEventListener('click', () => {
-    loading.textContent = 'Loading...'
-    getGifUrl(searchTerm)
-      .then((url) => { 
-        catImg.src = url
-        loading.textContent = ''
-      })
-      .catch((err) => {
-        if (err.message === 'ImageNotFound') {
-          loading.textContent = 'We can\'t find a gif with this term :(.' +
-            ' Try search another thing :)'
-          searchTerm = fallbackSearchTerm
-        }
-        else {
-          loading.textContent = 'A thing not expected occurs... :/'
-        }
-      })
+otherGifButton.addEventListener('click', () => {
+  loading.textContent = 'loading...'
+  buttonsHandle(searchTerm).then(messageText => {
+    loading.textContent = messages[messageText]
   })
 })
