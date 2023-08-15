@@ -50,16 +50,23 @@ function statusHandler(searchTerm) {
   })
 }
 
-getGifUrl(searchTerm).then((url => catImg.src = url))
-
-termSubmitButton.addEventListener('click', () => {
+function newSearchDOMStuff() {
   loading.textContent = 'loading...'
   if (termInput.value) {
     statusHandler(termInput.value).then(status => {
-      status === 'success' ? searchTerm = termInput.value : ''
+      if (status === 'success') {
+        searchTerm = termInput.value
+        termInput.value = ''
+      }
       loading.textContent = messages[status]
     })
   }
+}
+
+getGifUrl(searchTerm).then((url => catImg.src = url))
+
+termSubmitButton.addEventListener('click', () => {
+  newSearchDOMStuff()
 })
 
 otherGifButton.addEventListener('click', () => {
@@ -68,3 +75,12 @@ otherGifButton.addEventListener('click', () => {
     loading.textContent = messages[status]
   })
 })
+
+termInput.addEventListener('keypress', (e) => { 
+  e.keyCode === 13 ? newSearchDOMStuff() : ''
+  })
+
+
+
+
+
